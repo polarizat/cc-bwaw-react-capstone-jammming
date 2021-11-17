@@ -4,8 +4,6 @@ import { Track } from '../Track/Track';
 
 class TrackList extends React.Component {
     render(){
-        console.log("TrackList render is called ");
-        console.log(this.props.tracks);
         return (
             <div className="TrackList">
                 {

@@ -3,32 +3,37 @@ import './App.css';
 import { SearchBar } from '../SearchBar/SearchBar';
 import { SearchResults } from '../SearchResults/SearchResults';
 import { Playlist } from '../Playlist/Playlist';
+import { Spotify } from '../../util/Spotify';
 
 class App extends React.Component {
   constructor(props){
     super(props);
 
-    this.state = {
-      searchResults: [
-        {name: 'Tiny Dancer', artist: 'Elton John', album: 'Madman Across The Water', id: 123},
-        {name: 'Tiny Dancer - Live Album Version', artist: 'Ben Folds', album: 'Ben Folds Live', id: 124},
-        {name: 'Tiny Dancer', artist: 'Tim McGraw', album: 'Love Story', id: 125},
-        {name: 'Tiny Dancer2', artist: 'Elton John', album: 'Madman Across The Water', id: 126},
-        {name: 'Tiny Dancer3 - Live Album Version', artist: 'Ben Folds', album: 'Ben Folds Live', id: 127},
-        {name: 'Tiny Dancer4', artist: 'Tim McGraw2', album: 'Love Story', id: 128},
-        {name: 'Tiny Dancer444444', artist: 'Tim McGraw2', album: 'Love Story', id: 129}
-      ],
-      playlistName: "It's Not Right But It's Okay",
-      playlistTracks: [
-        {name: 'Tiny Dancer', artist: 'Elton John', album: 'Madman Across The Water', id: 123},
-        {name: 'Tiny Dancer - Live Album Version', artist: 'Ben Folds', album: 'Ben Folds Live', id: 124},
-        {name: 'Tiny Dancer', artist: 'Tim McGraw', album: 'Love Story', id: 125}
-      ]
-  };
+  //   this.state = {
+  //     searchResults: [
+  //       {name: 'Tiny Dancer', artist: 'Elton John', album: 'Madman Across The Water', id: 123},
+  //     ],
+  //     playlistName: "It's Not Right But It's Okay",
+  //     playlistTracks: [
+  //     ]
+  // };
+
+  this.state = {
+    searchResults: [],
+    playlistName: "New Playlist",
+    playlistTracks: []
+};
     
     this.addTrack = this.addTrack.bind(this);
     this.removeTrack = this.removeTrack.bind(this);
     this.updatePlaylistName = this.updatePlaylistName.bind(this);
+    this.savePlaylist = this.savePlaylist.bind(this);
+    this.search = this.search.bind(this);
+
+  }
+
+  componentDidMount() {
+    Spotify.getAccessToken();
   }
 
   addTrack(track) {
@@ -38,6 +43,7 @@ class App extends React.Component {
       
       this.state.playlistTracks.push(track);
       this.setState({playlistTracks: this.state.playlistTracks});
+
     }
   }
 
@@ -46,26 +52,56 @@ class App extends React.Component {
   }
 
   updatePlaylistName(name) {
+    console.log("UPDATE NAME " + name)
     this.setState(
       { playlistName: name }
     );
   }
 
+  savePlaylist() {
+    const trackUris = this.state.playlistTracks.map(playlistTrack => playlistTrack.uri);
+    Spotify.savePlaylist(this.state.playlistName, trackUris);
+    this.setState({
+      playlistTracks: []
+    });
+    this.updatePlaylistName('New Playlist');
+    console.info(trackUris);
+  }
+
+  search(searchTerm) {
+    Spotify.search(searchTerm).then(searchResults => {
+      this.setState({
+        searchResults: searchResults
+      });
+    })
+  }
+
+  
+
   render() {
     return (
       <div>
         <h1>Ja<span className="highlight">mmm</span>ing</h1>
+
         <div className="App">
-          <SearchBar />
+          <SearchBar 
+            onSearch={this.search}
+          />
+
           <div className="App-playlist">
-            <SearchResults searchResults={this.state.searchResults} onAdd={this.addTrack}/>
+            <SearchResults 
+              searchResults={this.state.searchResults} 
+              onAdd={this.addTrack}
+            />
             <Playlist 
               playlistName={this.state.playlistName} 
               playlistTracks={this.state.playlistTracks} 
               onRemove={this.removeTrack}
               onNameChange={this.updatePlaylistName}
+              onSave={this.savePlaylist}
             />
           </div>
+
         </div>
       </div>
     );

@@ -8,6 +8,12 @@ class App extends React.Component {
   constructor(props){
     super(props);
     this.state.SearchResults = [];
+    this.state.playlistName = "It's Not Right But It's Okay";
+    this.state.playlistTracks = [
+      {name: 'Tiny Dancer', artist: 'Elton John', album: 'Madman Across The Water', id: 123},
+      {name: 'Tiny Dancer - Live Album Version', artist: 'Ben Folds', album: 'Ben Folds Live', id: 124},
+      {name: 'Tiny Dancer', artist: 'Tim McGraw', album: 'Love Story', id: 125}
+    ]
   }
   render() {
     return (
@@ -17,7 +23,7 @@ class App extends React.Component {
           <SearchBar />
           <div className="App-playlist">
             <SearchResults searchResults={this.state.SearchResults}/>
-            <Playlist />
+            <Playlist playlistName={this.state.playlistName} playlistTracks={this.state.playlistTracks}/>
           </div>
         </div>
       </div>

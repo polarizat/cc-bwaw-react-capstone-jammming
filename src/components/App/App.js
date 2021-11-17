@@ -14,7 +14,18 @@ class App extends React.Component {
       {name: 'Tiny Dancer - Live Album Version', artist: 'Ben Folds', album: 'Ben Folds Live', id: 124},
       {name: 'Tiny Dancer', artist: 'Tim McGraw', album: 'Love Story', id: 125}
     ]
+    
+    this.addTrack = this.addTrack.bind(this);
   }
+
+  addTrack(track) {
+    if (this.state.playlistTracks.find(savedTrack => savedTrack === track.id)) {
+      return;
+    } else {
+      this.setState(this.state.playlistTracks.push(track));
+    }
+  }
+
   render() {
     return (
       <div>
@@ -22,7 +33,7 @@ class App extends React.Component {
         <div className="App">
           <SearchBar />
           <div className="App-playlist">
-            <SearchResults searchResults={this.state.SearchResults}/>
+            <SearchResults searchResults={this.state.SearchResults} onAdd={this.addTrack}/>
             <Playlist playlistName={this.state.playlistName} playlistTracks={this.state.playlistTracks}/>
           </div>
         </div>

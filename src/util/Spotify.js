@@ -1,5 +1,5 @@
 const clientId = '3e10c5de635d46c2a4804427595681ba';
-const redirectUri = "http://cc-jammmer.netlify.app";
+const redirectUri = "https://cc-jammmer.netlify.app";
 const spotifyUrl = `https://accounts.spotify.com/authorize?response_type=token&scope=playlist-modify-public&client_id=${clientId}&redirect_uri=${redirectUri}`;
 let accessToken = undefined;
 let expiresIn = undefined;
